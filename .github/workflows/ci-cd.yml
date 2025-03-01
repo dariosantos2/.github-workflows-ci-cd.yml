@@ -39,9 +39,10 @@ jobs:
       run: |
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
         chmod 600 private_key
-        ssh -o StrictHostKeyChecking=no -i private_key user@your-droplet-ip << 'EOF'
+        ssh -o StrictHostKeyChecking=no -i private_key root@${{ secrets.DROPLET_IP }} << 'EOF'
         docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/your-app:${{ github.sha }}
         docker-compose down
+        sleep 10  # Adiciona um delay para garantir que o banco de dados esteja pronto
         docker-compose up -d
         EOF
       env:
